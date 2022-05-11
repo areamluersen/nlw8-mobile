@@ -9,12 +9,29 @@ import { styles } from './styles';
 import { theme } from '../../theme';
 import { Options } from '../Options';
 
+import { feedbackTypes } from '../../utils/feedbackTypes';
+import { Form } from '../Form';
+import { Sucess } from '../Sucess';
+
+export type FeedbackType = keyof typeof feedbackTypes;
+
 function Widget() {
+    const [feedbackType, setFeedbackType] = React.useState<FeedbackType | null>(null);
+    const [feedbackSent, setFeedbackSent] = React.useState(false);
 
     const bottomSheetRef = useRef<BottomSheet>(null);
 
     function handleOpen() {
         bottomSheetRef.current?.expand();
+    }
+
+    function handleRestarFeedback() {
+        setFeedbackType(null);
+        setFeedbackSent(false);
+    }
+
+    function handleFeedbackSent() {
+        setFeedbackSent(true);
     }
 
   return (
@@ -32,7 +49,22 @@ function Widget() {
             backgroundStyle={styles.modal}
             handleIndicatorStyle={styles.indicator}
         >
-            <Options />
+            {
+                feedbackSent ? 
+                <Sucess onSendAnotherFeedback={handleRestarFeedback}/> : 
+                <>
+                   { feedbackType ?
+                    <Form 
+                        feedbackType={feedbackType} 
+                        onFeedbackCanceled={handleRestarFeedback}
+                        onFeedbackSent={handleFeedbackSent}
+                    />
+                    :
+                    <Options 
+                        onFeedbackTypeChanged={setFeedbackType}
+                    />}
+                </>
+            }
         </BottomSheet>
     </>
   );

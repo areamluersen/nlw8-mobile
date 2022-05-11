@@ -5,7 +5,7 @@ import { styles } from './styles';
 
 export function Copyright() {
   return (
-    <View style={styles.container}>
+    <View >
         <Text style={styles.text}>
             Feito com ♥ pela Rocketseat
         </Text>
